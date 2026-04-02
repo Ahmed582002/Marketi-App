@@ -1,16 +1,20 @@
-# store
+# Marketi App
 
-A new Flutter project.
+A Flutter project Created Useing Cubit.
 
-## Getting Started
+## 📸 Screenshots
 
-This project is a starting point for a Flutter application.
+### Splash Screen
+![Splash Screen](assets/app%20screenshots/splash.jpg)
 
-A few resources to get you started if this is your first Flutter project:
+### Onboarding Screens
+![Onboarding1 Screen](assets/app%20screenshots/on_1)
+![Onboarding2 Screen](assets/app%20screenshots/on_2)
+![Onboarding3 Screen](assets/app%20screenshots/on_3)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Auth Screens
+![Login Screen](assets/app%20screenshots/login.jpg)
+![Signup Screen](assets/app%20screenshots/signup.jpg)
+![Forget Password Screen](assets/app%20screenshots/forgetpass.jpg)
+![Verify Code Screen](assets/app%20screenshots/vercode.jpg)
+![New Password Screen](assets/app%20screenshots/newpass.jpg)
