@@ -40,6 +40,13 @@ It uses Cubit for state management and follows clean architecture principles.
   <img src="assets/app%20screenshots/newpass.jpg" width="220"/>
 </p>
 
+### Home Screens
+<p align="center">
+  <img src="assets/app%20screenshots/home.jpg" width="220"/>
+  <img src="assets/app%20screenshots/cats.jpg" width="220"/>
+  <img src="assets/app%20screenshots/brands.jpg" width="220"/>
+</p>
+
 
 ## 👨‍💻 Developer
 
