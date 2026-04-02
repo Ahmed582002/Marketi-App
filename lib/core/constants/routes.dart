@@ -9,6 +9,8 @@ class AppRoute {
   static const String forgetPass = "/forget-password";
   // home
   static const String home = "/home";
+  static const String homeDummy = "/home-dummy";
+  static const String mainScreen = "/main-screen";
   static const String profile = "/profile";
   static const String test = "/test";
 }

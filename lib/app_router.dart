@@ -6,6 +6,9 @@ import 'package:store/core/constants/routes.dart';
 import 'package:store/features/Presentation/view/screens/auth/forget_password_screen.dart';
 import 'package:store/features/Presentation/view/screens/auth/login_screen.dart';
 import 'package:store/features/Presentation/view/screens/auth/new_password_screen.dart';
+import 'package:store/features/Presentation/view/screens/home/home_dummy_screen.dart';
+import 'package:store/features/Presentation/view/screens/home/home_screen.dart';
+import 'package:store/features/Presentation/view/screens/home/main_screen.dart';
 import 'package:store/features/Presentation/view/screens/onboarding_screen.dart';
 import 'package:store/features/Presentation/view/screens/home/profile_screen.dart';
 import 'package:store/features/Presentation/view/screens/auth/signup_screen.dart';
@@ -16,9 +19,13 @@ import 'package:store/features/Presentation/viewModel/cubit/auth/cubit/login_cub
 import 'package:store/features/Presentation/viewModel/cubit/auth/cubit/new_password_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/auth/cubit/signup_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/auth/cubit/verification_code_cubit.dart';
+import 'package:store/features/Presentation/viewModel/cubit/home/cubit/home_cubit.dart';
+import 'package:store/features/Presentation/viewModel/cubit/home/cubit/home_dummy_cubit.dart';
+import 'package:store/features/Presentation/viewModel/cubit/home/cubit/main_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/home/cubit/profile_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/onboarding_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/splash_cubit.dart';
+import 'package:store/features/data/repositories/home_repository.dart';
 import 'package:store/features/data/repositories/user_repository.dart';
 
 class AppRouter {
@@ -89,6 +96,32 @@ class AppRouter {
                 ProfileCubit(UserRepository(api: DioConsumer(dio: Dio())))
                   ..getUser(),
             child: const ProfileScreen(),
+          ),
+        );
+
+      case AppRoute.home:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) =>
+                HomeCubit(HomeRepository(api: DioConsumer(dio: Dio())))
+                  ..loadHome(),
+            child: const HomeScreen(),
+          ),
+        );
+
+      case AppRoute.homeDummy:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => HomeDummyCubit(),
+            child: const HomeDummyScreen(),
+          ),
+        );
+
+      case AppRoute.mainScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => MainCubit(),
+            child: const MainScreen(),
           ),
         );
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:store/features/Presentation/viewModel/cubit/user_state.dart';
+import 'package:store/features/Presentation/viewModel/cubit/auth/state/user_state.dart';
 import 'package:store/features/data/models/sign_in_model.dart';
 import 'package:store/features/data/repositories/user_repository.dart';
 
