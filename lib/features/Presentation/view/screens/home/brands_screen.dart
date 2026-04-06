@@ -1,49 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:store/features/Presentation/viewModel/cubit/home/cubit/brands_cubit.dart';
-import 'package:store/features/Presentation/viewModel/cubit/home/state/brands_state.dart';
+import 'package:store/features/data/models/home/brand_model.dart';
 
 class BrandsScreen extends StatelessWidget {
-  const BrandsScreen({super.key});
+  final List<BrandModel> brands;
+
+  const BrandsScreen({super.key, required this.brands});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => BrandsCubit()..getBrands(),
-      child: BlocBuilder<BrandsCubit, BrandsState>(
-        builder: (context, state) {
-          if (state is BrandsLoaded) {
-            return GridView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: state.brands.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemBuilder: (context, index) {
-                final brand = state.brands[index];
+    return Scaffold(
+      appBar: AppBar(title: const Text("Brands")),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(12),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: brands.length,
+        itemBuilder: (_, index) {
+          final brand = brands[index];
 
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "${brand["emoji"]} ${brand["name"]}",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          }
-
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.grey[200],
+            ),
+            child: Text(
+              "${brand.emoji} ${brand.name}",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          );
         },
       ),
     );

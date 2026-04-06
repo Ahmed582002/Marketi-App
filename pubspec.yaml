@@ -41,6 +41,7 @@ dependencies:
   flutter_bloc:
   dartz:
   jwt_decoder:
+  shimmer:
 
 dev_dependencies:
   flutter_test:

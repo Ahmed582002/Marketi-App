@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:store/core/api/api_consumer.dart';
+import 'package:store/core/api/end_ponits.dart';
 import 'package:store/core/errors/exceptions.dart';
 import 'package:store/features/data/models/home/brand_model.dart';
 import 'package:store/features/data/models/home/category_model.dart';
@@ -13,7 +14,7 @@ class HomeRepository {
   //! ================== Categories ==================
   Future<Either<String, List<CategoryModel>>> getCategories() async {
     try {
-      final response = await api.get("/home/categories");
+      final response = await api.get(EndPoint.categories);
 
       final list = (response['list'] as List)
           .map((e) => CategoryModel.fromJson(e))
@@ -28,7 +29,7 @@ class HomeRepository {
   //! ================== Brands ==================
   Future<Either<String, List<BrandModel>>> getBrands() async {
     try {
-      final response = await api.get("/home/brands");
+      final response = await api.get(EndPoint.brands);
 
       final list = (response['list'] as List)
           .map((e) => BrandModel.fromJson(e))
@@ -47,7 +48,7 @@ class HomeRepository {
   }) async {
     try {
       final response = await api.get(
-        "/home/products",
+        EndPoint.products,
         queryParameters: {"skip": skip, "limit": limit},
       );
 
@@ -62,9 +63,9 @@ class HomeRepository {
   }
 
   //! ================== Product Details ==================
-  Future<Either<String, ProductModel>> getProductDetails(int id) async {
+  Future<Either<String, ProductModel>> getSingleProduct(int id) async {
     try {
-      final response = await api.get("/home/products/$id");
+      final response = await api.get("${EndPoint.products}/$id");
 
       return Right(ProductModel.fromJson(response));
     } on ServerException catch (e) {
@@ -80,7 +81,7 @@ class HomeRepository {
   }) async {
     try {
       final response = await api.get(
-        "/home/products/category/$category",
+        "${EndPoint.productsByCategory}/$category",
         queryParameters: {"skip": skip, "limit": limit},
       );
 
@@ -102,7 +103,7 @@ class HomeRepository {
   }) async {
     try {
       final response = await api.get(
-        "/home/products/brand/$brand",
+        "${EndPoint.productsByBrand}/$brand",
         queryParameters: {"skip": skip, "limit": limit},
       );
 
@@ -111,6 +112,48 @@ class HomeRepository {
           .toList();
 
       return Right(list);
+    } on ServerException catch (e) {
+      return Left(e.errModel.errorMessage);
+    }
+  }
+
+  Future<Either<String, Map<String, dynamic>>> filterProducts({
+    int skip = 0,
+    int limit = 10,
+    String? search,
+    String? brand,
+    String? category,
+    String? rating,
+    String? price,
+    String? discount,
+    bool? popular,
+  }) async {
+    try {
+      final response = await api.post(
+        EndPoint.productsFilter,
+        data: {
+          "skip": skip,
+          "limit": limit,
+          "search": search,
+          "brand": brand,
+          "category": category,
+          "rating": rating,
+          "price": price,
+          "discount": discount,
+          "popular": popular,
+        },
+      );
+
+      final list = (response['list'] as List)
+          .map((e) => ProductModel.fromJson(e))
+          .toList();
+
+      return Right({
+        "products": list,
+        "total": response['total'],
+        "skip": response['skip'],
+        "limit": response['limit'],
+      });
     } on ServerException catch (e) {
       return Left(e.errModel.errorMessage);
     }

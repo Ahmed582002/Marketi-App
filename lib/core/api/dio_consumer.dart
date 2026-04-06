@@ -9,7 +9,10 @@ class DioConsumer extends ApiConsumer {
 
   DioConsumer({required this.dio}) {
     dio.options.baseUrl = EndPoint.baseUrl;
+
+    //! Interceptors
     dio.interceptors.add(ApiInterceptor());
+
     dio.interceptors.add(
       LogInterceptor(
         request: true,
@@ -37,7 +40,7 @@ class DioConsumer extends ApiConsumer {
       );
       return response.data;
     } on DioException catch (e) {
-      handleDioExceptions(e);
+      throw handleDioExceptions(e);
     }
   }
 
@@ -48,14 +51,10 @@ class DioConsumer extends ApiConsumer {
     Map<String, dynamic>? queryParameters,
   }) async {
     try {
-      final response = await dio.get(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-      );
+      final response = await dio.get(path, queryParameters: queryParameters);
       return response.data;
     } on DioException catch (e) {
-      handleDioExceptions(e);
+      throw handleDioExceptions(e);
     }
   }
 
@@ -74,7 +73,7 @@ class DioConsumer extends ApiConsumer {
       );
       return response.data;
     } on DioException catch (e) {
-      handleDioExceptions(e);
+      throw handleDioExceptions(e);
     }
   }
 
@@ -93,7 +92,7 @@ class DioConsumer extends ApiConsumer {
       );
       return response.data;
     } on DioException catch (e) {
-      handleDioExceptions(e);
+      throw handleDioExceptions(e);
     }
   }
 }

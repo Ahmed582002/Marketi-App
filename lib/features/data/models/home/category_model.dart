@@ -1,3 +1,5 @@
+import 'package:store/core/api/end_ponits.dart';
+
 class CategoryModel {
   String? slug;
   String? name;
@@ -8,10 +10,10 @@ class CategoryModel {
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-      slug: json['slug'],
-      name: json['name'],
-      url: json['url'],
-      image: json['image'],
+      slug: json[ApiKey.categorieSlug],
+      name: json[ApiKey.categorieName],
+      url: json[ApiKey.categorieUrl],
+      image: json[ApiKey.categorieImage],
     );
   }
 }

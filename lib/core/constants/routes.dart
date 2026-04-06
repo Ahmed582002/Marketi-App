@@ -13,4 +13,7 @@ class AppRoute {
   static const String mainScreen = "/main-screen";
   static const String profile = "/profile";
   static const String test = "/test";
+  static const String productDetails = "/product-details";
+  static const String categories = "/categories";
+  static const String brands = "/brands";
 }

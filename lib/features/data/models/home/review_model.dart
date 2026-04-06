@@ -1,3 +1,5 @@
+import 'package:store/core/api/end_ponits.dart';
+
 class ReviewModel {
   int? rating;
   String? comment;
@@ -15,11 +17,11 @@ class ReviewModel {
 
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
     return ReviewModel(
-      rating: json['rating'],
-      comment: json['comment'],
-      date: json['date'],
-      reviewerName: json['reviewerName'],
-      reviewerEmail: json['reviewerEmail'],
+      rating: json[ApiKey.reviewRating],
+      comment: json[ApiKey.reviewComment],
+      date: json[ApiKey.reviewDate],
+      reviewerName: json[ApiKey.reviewReviewerName],
+      reviewerEmail: json[ApiKey.reviewReviewerEmail],
     );
   }
 }

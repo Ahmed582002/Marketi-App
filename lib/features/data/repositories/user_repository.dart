@@ -42,18 +42,20 @@ class UserRepository {
     XFile? profilePic,
   }) async {
     try {
-      final response = await api.post(
-        EndPoint.signUp,
-        isFromData: true,
-        data: {
-          ApiKey.name: name,
-          ApiKey.phone: phone,
-          ApiKey.email: email,
-          ApiKey.password: password,
-          ApiKey.confirmPassword: confirmPassword,
-          ApiKey.image: await uploadImageToAPI(profilePic ?? XFile('')),
-        },
-      );
+      Map<String, dynamic> data = {
+        ApiKey.name: name,
+        ApiKey.phone: phone,
+        ApiKey.email: email,
+        ApiKey.password: password,
+        ApiKey.confirmPassword: confirmPassword,
+      };
+
+      if (profilePic != null) {
+        data[ApiKey.userImage] = await uploadImageToAPI(profilePic);
+      }
+
+      final response = await api.post(EndPoint.signUp, data: data);
+
       final signUPModel = SignUpModel.fromJson(response);
       return Right(signUPModel);
     } on ServerException catch (e) {

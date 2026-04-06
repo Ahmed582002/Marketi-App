@@ -18,7 +18,7 @@ class SplashCubit extends Cubit<SplashState> {
 
     if (seenOnboarding) {
       if (token != null) {
-        emit(SplashNavigate(AppRoute.homeDummy));
+        emit(SplashNavigate(AppRoute.mainScreen));
       } else {
         emit(SplashNavigate(AppRoute.login));
       }

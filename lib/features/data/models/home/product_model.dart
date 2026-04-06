@@ -1,3 +1,4 @@
+import 'package:store/core/api/end_ponits.dart';
 import 'package:store/features/data/models/home/review_model.dart';
 
 class ProductModel {
@@ -33,19 +34,20 @@ class ProductModel {
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      category: json['category'],
-      price: (json['price'] as num?)?.toDouble(),
-      discountPercentage: (json['discountPercentage'] as num?)?.toDouble(),
-      rating: (json['rating'] as num?)?.toDouble(),
-      stock: json['stock'],
-      tags: List<String>.from(json['tags'] ?? []),
-      brand: json['brand'],
-      thumbnail: json['thumbnail'],
-      images: List<String>.from(json['images'] ?? []),
-      reviews: (json['reviews'] as List?)
+      id: json[ApiKey.productId],
+      title: json[ApiKey.productTitle],
+      description: json[ApiKey.productDescription],
+      category: json[ApiKey.productCategory],
+      price: (json[ApiKey.productPrice] as num?)?.toDouble(),
+      discountPercentage: (json[ApiKey.productDiscountPercentage] as num?)
+          ?.toDouble(),
+      rating: (json[ApiKey.productRating] as num?)?.toDouble(),
+      stock: json[ApiKey.productStock],
+      tags: List<String>.from(json[ApiKey.productTags] ?? []),
+      brand: json[ApiKey.productBrand],
+      thumbnail: json[ApiKey.productThumbnail],
+      images: List<String>.from(json[ApiKey.productImages] ?? []),
+      reviews: (json[ApiKey.productReviews] as List?)
           ?.map((e) => ReviewModel.fromJson(e))
           .toList(),
     );

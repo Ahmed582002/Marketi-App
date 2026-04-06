@@ -12,8 +12,8 @@ class CustomBottomNavBar extends StatelessWidget {
 
   static const List<_NavItem> _items = [
     _NavItem(icon: Icons.home_outlined, label: "Home"),
-    _NavItem(icon: Icons.grid_view, label: "Categories"),
-    _NavItem(icon: Icons.auto_awesome_outlined, label: "Brands"),
+    _NavItem(icon: Icons.shopping_cart, label: "Cart"),
+    _NavItem(icon: Icons.favorite, label: "Favorites"),
     _NavItem(icon: Icons.person_outline, label: "Profile"),
   ];
 

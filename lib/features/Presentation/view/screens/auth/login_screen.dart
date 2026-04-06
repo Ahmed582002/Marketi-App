@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:store/core/constants/color.dart';
 import 'package:store/core/constants/images.dart';
+import 'package:store/core/constants/routes.dart';
 import 'package:store/features/Presentation/view/widgets/custom_button.dart';
 import 'package:store/features/Presentation/view/widgets/custom_login_with_button.dart';
 import 'package:store/features/Presentation/view/widgets/custom_textfield.dart';
@@ -31,7 +32,7 @@ class LoginScreen extends StatelessWidget {
               context,
             ).showSnackBar(SnackBar(content: Text(state.message)));
 
-            Navigator.pushReplacementNamed(context, "/home");
+            Navigator.pushReplacementNamed(context, AppRoute.home);
           } else if (state is LoginError) {
             ScaffoldMessenger.of(
               context,

@@ -6,9 +6,11 @@ import 'package:store/core/constants/routes.dart';
 import 'package:store/features/Presentation/view/screens/auth/forget_password_screen.dart';
 import 'package:store/features/Presentation/view/screens/auth/login_screen.dart';
 import 'package:store/features/Presentation/view/screens/auth/new_password_screen.dart';
+import 'package:store/features/Presentation/view/screens/home/brands_screen.dart';
+import 'package:store/features/Presentation/view/screens/home/categories_screen.dart';
 import 'package:store/features/Presentation/view/screens/home/home_dummy_screen.dart';
-import 'package:store/features/Presentation/view/screens/home/home_screen.dart';
 import 'package:store/features/Presentation/view/screens/home/main_screen.dart';
+import 'package:store/features/Presentation/view/screens/home/product_details_screen.dart';
 import 'package:store/features/Presentation/view/screens/onboarding_screen.dart';
 import 'package:store/features/Presentation/view/screens/home/profile_screen.dart';
 import 'package:store/features/Presentation/view/screens/auth/signup_screen.dart';
@@ -21,10 +23,12 @@ import 'package:store/features/Presentation/viewModel/cubit/auth/cubit/signup_cu
 import 'package:store/features/Presentation/viewModel/cubit/auth/cubit/verification_code_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/home/cubit/home_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/home/cubit/home_dummy_cubit.dart';
-import 'package:store/features/Presentation/viewModel/cubit/home/cubit/main_cubit.dart';
+import 'package:store/features/Presentation/viewModel/cubit/home/cubit/product_details_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/home/cubit/profile_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/onboarding_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/splash_cubit.dart';
+import 'package:store/features/data/models/home/brand_model.dart';
+import 'package:store/features/data/models/home/category_model.dart';
 import 'package:store/features/data/repositories/home_repository.dart';
 import 'package:store/features/data/repositories/user_repository.dart';
 
@@ -99,16 +103,6 @@ class AppRouter {
           ),
         );
 
-      case AppRoute.home:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) =>
-                HomeCubit(HomeRepository(api: DioConsumer(dio: Dio())))
-                  ..loadHome(),
-            child: const HomeScreen(),
-          ),
-        );
-
       case AppRoute.homeDummy:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
@@ -120,10 +114,37 @@ class AppRouter {
       case AppRoute.mainScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (context) => MainCubit(),
+            create: (context) =>
+                HomeCubit(HomeRepository(api: DioConsumer(dio: Dio())))
+                  ..loadHome(),
             child: const MainScreen(),
           ),
         );
+
+      case AppRoute.productDetails:
+        final productId = settings.arguments as int;
+
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => ProductDetailsCubit(
+              HomeRepository(api: DioConsumer(dio: Dio())),
+            )..getProduct(productId),
+            child: ProductDetailsScreen(productId: productId),
+          ),
+        );
+
+      case AppRoute.categories:
+        final List<CategoryModel> categories =
+            settings.arguments as List<CategoryModel>;
+
+        return MaterialPageRoute(
+          builder: (_) => CategoriesScreen(categories: categories),
+        );
+
+      case AppRoute.brands:
+        final List<BrandModel> brands = settings.arguments as List<BrandModel>;
+
+        return MaterialPageRoute(builder: (_) => BrandsScreen(brands: brands));
 
       default:
         return MaterialPageRoute(
