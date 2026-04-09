@@ -8,6 +8,7 @@ class ProductCard extends StatelessWidget {
   final double rating;
   final VoidCallback? onTap;
   final bool isFavorite;
+  final VoidCallback? onFavoriteTap;
 
   const ProductCard({
     super.key,
@@ -18,6 +19,7 @@ class ProductCard extends StatelessWidget {
     required this.rating,
     this.onTap,
     this.isFavorite = false,
+    this.onFavoriteTap,
   });
 
   @override
@@ -62,16 +64,19 @@ class ProductCard extends StatelessWidget {
                 Positioned(
                   top: 10,
                   right: 10,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: const EdgeInsets.all(6),
-                    child: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      size: 18,
-                      color: Colors.grey,
+                  child: GestureDetector(
+                    onTap: onFavoriteTap,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: const EdgeInsets.all(6),
+                      child: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        size: 18,
+                        color: isFavorite ? Colors.red : Colors.grey,
+                      ),
                     ),
                   ),
                 ),
@@ -129,7 +134,7 @@ class ProductCard extends StatelessWidget {
 
                   // Price
                   Text(
-                    "${price.toInt()} LE",
+                    "${price.toInt()} EGP",
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

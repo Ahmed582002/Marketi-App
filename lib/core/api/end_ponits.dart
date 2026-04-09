@@ -8,6 +8,12 @@ class EndPoint {
   static String productsByCategory = "/home/products/category";
   static String productsByBrand = "/home/products/brand";
   static String productsFilter = "/home/productsFilter";
+  static String addFavorite = "/user/addFavorite";
+  static String deleteFavorite = "/user/deleteFavorite";
+  static String getFavorite = "/user/getFavorite";
+  static String addCart = "/user/addCart";
+  static String deleteCart = "/user/deleteCart";
+  static String getCart = "/user/getCart";
   static String getUserDataEndPoint(dynamic id) {
     return "/portfoilo/userData/$id";
   }

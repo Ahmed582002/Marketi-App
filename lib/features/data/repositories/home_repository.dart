@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:store/core/api/api_consumer.dart';
 import 'package:store/core/api/end_ponits.dart';
 import 'package:store/core/errors/exceptions.dart';
+import 'package:store/features/Presentation/viewModel/cache/cache_helper.dart';
 import 'package:store/features/data/models/home/brand_model.dart';
 import 'package:store/features/data/models/home/category_model.dart';
 import 'package:store/features/data/models/home/product_model.dart';
@@ -117,6 +118,7 @@ class HomeRepository {
     }
   }
 
+  //! ================== Filter ==================
   Future<Either<String, Map<String, dynamic>>> filterProducts({
     int skip = 0,
     int limit = 10,
@@ -157,5 +159,99 @@ class HomeRepository {
     } on ServerException catch (e) {
       return Left(e.errModel.errorMessage);
     }
+  }
+
+  //! ================== Add To Favorite ==================
+  Future<Either<String, String>> addFavorite(int productId) async {
+    try {
+      final response = await api.post(
+        EndPoint.addFavorite,
+        data: {"productId": productId},
+      );
+
+      return Right(response["message"]);
+    } on ServerException catch (e) {
+      return Left(e.errModel.errorMessage);
+    }
+  }
+
+  //! ================== Remove From Favorite ==================
+  Future<Either<String, String>> removeFavorite(int productId) async {
+    try {
+      final response = await api.delete(
+        EndPoint.deleteFavorite,
+        data: {"productId": productId},
+      );
+
+      return Right(response["message"]);
+    } on ServerException catch (e) {
+      return Left(e.errModel.errorMessage);
+    }
+  }
+
+  //! ================== Get Favorite ==================
+  Future<Either<String, List<ProductModel>>> getFavorites() async {
+    try {
+      final response = await api.get(EndPoint.getFavorite);
+
+      final list = (response['list'] as List)
+          .map((e) => ProductModel.fromJson(e))
+          .toList();
+
+      return Right(list);
+    } on ServerException catch (e) {
+      return Left(e.errModel.errorMessage);
+    }
+  }
+
+  //! ================== Add To Cart ==================
+  Future<Either<String, String>> addToCart(int productId) async {
+    try {
+      final response = await api.post(
+        EndPoint.addCart,
+        data: {"productId": productId.toString()},
+      );
+
+      return Right(response["message"]);
+    } on ServerException catch (e) {
+      return Left(e.errModel.errorMessage);
+    }
+  }
+
+  //! ================== Remove From Cart ==================
+  Future<Either<String, String>> removeFromCart(int productId) async {
+    try {
+      final response = await api.post(
+        EndPoint.deleteCart,
+        data: {"productId": productId.toString()},
+      );
+
+      return Right(response["message"]);
+    } on ServerException catch (e) {
+      return Left(e.errModel.errorMessage);
+    }
+  }
+
+  //! ================== Get Cart ==================
+  Future<Either<String, List<ProductModel>>> getCart() async {
+    try {
+      final response = await api.get(EndPoint.getCart);
+
+      final list = (response['list'] as List)
+          .map((e) => ProductModel.fromJson(e))
+          .toList();
+
+      return Right(list);
+    } on ServerException catch (e) {
+      return Left(e.errModel.errorMessage);
+    }
+  }
+
+  void saveFavorites(List<int> ids) {
+    CacheHelper().saveData(key: "favorites", value: ids);
+  }
+
+  List<int> getSavedFavorites() {
+    return List<int>.from(CacheHelper().getData(key: "favorites") ?? []);
   }
 }

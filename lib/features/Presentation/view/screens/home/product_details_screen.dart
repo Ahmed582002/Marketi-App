@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:store/core/constants/color.dart';
+import 'package:store/features/Presentation/view/widgets/custom_button.dart';
 import 'package:store/features/Presentation/viewModel/cubit/home/cubit/product_details_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/home/state/product_details_state.dart';
 
@@ -26,33 +28,94 @@ class ProductDetailsScreen extends StatelessWidget {
             final product = state.product;
 
             return ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               children: [
-                Image.network(product.thumbnail ?? ""),
+                // images
+                Image.network(product.thumbnail ?? "", height: 230),
+                const SizedBox(height: 5),
+                SizedBox(
+                  height: 90,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: product.images!.length,
+                    itemBuilder: (context, index) => Container(
+                      margin: EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppColors.primary),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Image.network(product.images![index]),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      product.category ?? "",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.displaySmall!.copyWith(fontSize: 14),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: AppColors.text,
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            "${product.rating}",
+                            style: TextStyle(color: AppColors.secondary),
+                          ),
+                          SizedBox(width: 4),
+                          const Icon(
+                            Icons.star,
+                            size: 14,
+                            color: Colors.orange,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
                 Text(
                   product.title ?? "",
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
 
                 const SizedBox(height: 10),
 
-                Text(product.description ?? ""),
-
-                const SizedBox(height: 20),
-
                 Text(
-                  "${product.price} LE",
+                  "${product.price} EGP",
                   style: const TextStyle(
                     fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    color: AppColors.primary,
                   ),
                 ),
+                const SizedBox(height: 10),
+
+                Text(
+                  "Description",
+                  style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.headText,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(product.description ?? ""),
+                const SizedBox(height: 30),
+                CustomButton(text: "Add To Cart", onPressed: () {}),
               ],
             );
           }

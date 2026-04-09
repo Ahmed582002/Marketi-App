@@ -115,8 +115,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (context) =>
-                HomeCubit(HomeRepository(api: DioConsumer(dio: Dio())))
-                  ..loadHome(),
+                HomeCubit(HomeRepository(api: DioConsumer(dio: Dio()))),
             child: const MainScreen(),
           ),
         );

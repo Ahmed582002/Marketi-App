@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:store/core/constants/color.dart';
+import 'package:store/features/Presentation/view/screens/home/favorite_screen.dart';
 import 'package:store/features/Presentation/view/screens/home/home_screen.dart';
 import 'package:store/features/Presentation/viewModel/cubit/home/cubit/main_cubit.dart';
 import 'package:store/features/Presentation/viewModel/cubit/home/state/main_state.dart';
@@ -20,7 +21,7 @@ class MainScreen extends StatelessWidget {
           final screens = [
             const HomeScreen(),
             const Center(child: Text("Cart")),
-            const Center(child: Text("Favorites")),
+            const FavoritesPage(),
             const Center(child: Text("Profile")),
           ];
 

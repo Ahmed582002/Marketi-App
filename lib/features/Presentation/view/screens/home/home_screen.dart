@@ -141,11 +141,12 @@ class HomeScreen extends StatelessWidget {
                       title: product.title ?? "",
                       price: product.price ?? 0,
                       rating: product.rating ?? 0,
+                      isFavorite: cubit.isFavorite(product.id!),
+                      onFavoriteTap: () {
+                        cubit.toggleFavorite(product.id!);
+                      },
                       onTap: () {
-                        context.read<HomeCubit>().goToProductDetails(
-                          context,
-                          product.id!,
-                        );
+                        cubit.goToProductDetails(context, product.id!);
                       },
                     );
                   },

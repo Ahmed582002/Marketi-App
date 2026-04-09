@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:store/core/constants/routes.dart';
@@ -9,9 +8,14 @@ import 'package:store/features/data/repositories/home_repository.dart';
 class HomeCubit extends Cubit<HomeState> {
   final HomeRepository repo;
 
-  HomeCubit(this.repo) : super(HomeInitial());
+  HomeCubit(this.repo) : super(HomeInitial()) {
+    loadHome();
+  }
 
   int currentIndex = 0;
+  List favoriteProducts = [];
+  List cartProducts = [];
+
   TextEditingController searchController = TextEditingController();
   Timer? _debounce;
 
@@ -27,40 +31,46 @@ class HomeCubit extends Cubit<HomeState> {
   //! ================= NAV =================
   void changeBottomNav(int index) {
     currentIndex = index;
-    emit(
-      HomeSuccess(
-        categories: categories,
-        brands: brands,
-        products: products,
-        hasMore: hasMore,
-      ),
-    );
+
+    if (state is HomeSuccess) {
+      final current = state as HomeSuccess;
+
+      emit(current.copyWith());
+    }
   }
 
-  //! ================= INITIAL LOAD =================
+  //! ================= LOAD HOME =================
   Future<void> loadHome() async {
     emit(HomeLoading());
 
     final catRes = await repo.getCategories();
     final brandRes = await repo.getBrands();
     final prodRes = await repo.getProducts();
+    final favRes = await repo.getFavorites();
+    final cartRes = await repo.getCart();
 
     catRes.fold((e) => emit(HomeError(e)), (cats) {
       brandRes.fold((e) => emit(HomeError(e)), (brs) {
         prodRes.fold((e) => emit(HomeError(e)), (prods) {
-          categories = cats;
-          brands = brs;
-          products = prods;
-          skip = prods.length;
+          favRes.fold((e) => emit(HomeError(e)), (favProds) {
+            cartRes.fold((e) => emit(HomeError(e)), (cartProds) {
+              categories = cats;
+              brands = brs;
+              products = prods;
+              favoriteProducts = favProds;
+              cartProducts = cartProds;
 
-          emit(
-            HomeSuccess(
-              categories: categories,
-              brands: brands,
-              products: products,
-              hasMore: true,
-            ),
-          );
+              emit(
+                HomeSuccess(
+                  categories: categories,
+                  brands: brands,
+                  products: products,
+                  favoriteProducts: favoriteProducts,
+                  cartProducts: cartProducts,
+                ),
+              );
+            });
+          });
         });
       });
     });
@@ -89,14 +99,9 @@ class HomeCubit extends Cubit<HomeState> {
 
         isLoadingMore = false;
 
-        emit(
-          HomeSuccess(
-            categories: categories,
-            brands: brands,
-            products: products,
-            hasMore: hasMore,
-          ),
-        );
+        final current = state as HomeSuccess;
+
+        emit(current.copyWith(products: List.from(products)));
       },
     );
   }
@@ -114,14 +119,7 @@ class HomeCubit extends Cubit<HomeState> {
     );
 
     result.fold((e) => emit(HomeError(e)), (data) {
-      emit(
-        HomeSuccess(
-          categories: currentState.categories,
-          brands: currentState.brands,
-          products: data["products"],
-          hasMore: data["total"] > data["products"].length,
-        ),
-      );
+      emit(currentState.copyWith(products: data["products"]));
     });
   }
 
@@ -135,7 +133,9 @@ class HomeCubit extends Cubit<HomeState> {
 
   //! ================= FILTER =================
   Future<void> applyFilter({String? brand, String? category}) async {
-    emit(HomeLoading());
+    final currentState = state;
+
+    if (currentState is! HomeSuccess) return;
 
     final result = await repo.filterProducts(
       brand: brand,
@@ -149,29 +149,110 @@ class HomeCubit extends Cubit<HomeState> {
       skip = data["skip"];
       hasMore = data["total"] > products.length;
 
-      emit(
-        HomeSuccess(
-          categories: categories,
-          brands: brands,
-          products: products,
-          hasMore: hasMore,
-        ),
-      );
+      emit(currentState.copyWith(products: products));
     });
   }
 
-  //! ========== Navigate To Product Details ============
+  //! ================= TOGGLE FAVORITE =================
+  Future<void> toggleFavorite(int productId) async {
+    if (state is! HomeSuccess) return;
+
+    final currentState = state as HomeSuccess;
+
+    final isFav = currentState.favoriteProducts.any((e) => e.id == productId);
+
+    if (isFav) {
+      //! REMOVE
+      final result = await repo.removeFavorite(productId);
+
+      result.fold((e) => emit(HomeError(e)), (_) {
+        final updatedFavs = currentState.favoriteProducts
+            .where((e) => e.id != productId)
+            .toList();
+
+        emit(currentState.copyWith(favoriteProducts: updatedFavs));
+      });
+    } else {
+      //! ADD
+      final result = await repo.addFavorite(productId);
+
+      result.fold((e) => emit(HomeError(e)), (_) {
+        final product = currentState.products.firstWhere(
+          (e) => e.id == productId,
+        );
+
+        final updatedFavs = List.from(currentState.favoriteProducts)
+          ..add(product);
+
+        emit(currentState.copyWith(favoriteProducts: updatedFavs));
+      });
+    }
+  }
+
+  //! ================= TOGGLE Cart =================
+  Future<void> toggleCart(int productId) async {
+    final isInCart = cartProducts.any((element) => element.id == productId);
+
+    if (isInCart) {
+      final result = await repo.removeFromCart(productId);
+
+      result.fold((e) => emit(HomeError(e)), (_) async {
+        await refreshCart();
+      });
+    } else {
+      final result = await repo.addToCart(productId);
+
+      result.fold((e) => emit(HomeError(e)), (_) async {
+        await refreshCart();
+      });
+    }
+  }
+
+  //! ================= Refres Cart =================
+  Future<void> refreshCart() async {
+    final result = await repo.getCart();
+
+    result.fold((error) => emit(HomeError(error)), (cartProds) {
+      cartProducts = cartProds;
+
+      final currentState = state;
+      if (currentState is HomeSuccess) {
+        emit(currentState.copyWith(cartProducts: cartProducts));
+      }
+    });
+  }
+
+  //! ================= CHECK Cart =================
+  bool isInCart(int productId) {
+    return cartProducts.any((e) => e.id == productId);
+  }
+
+  //! ================= CHECK FAVORITE =================
+  bool isFavorite(int productId) {
+    if (state is! HomeSuccess) return false;
+
+    final currentState = state as HomeSuccess;
+
+    return currentState.favoriteProducts.any((e) => e.id == productId);
+  }
+
+  //! ================= NAVIGATIONS =================
   void goToProductDetails(BuildContext context, int productId) {
     Navigator.pushNamed(context, AppRoute.productDetails, arguments: productId);
   }
 
-  //! ========== Navigate To Categories ============
   void goToCategories(BuildContext context, List categories) {
     Navigator.pushNamed(context, AppRoute.categories, arguments: categories);
   }
 
-  //! ========== Navigate To Brands ============
   void goToBrands(BuildContext context, List brands) {
     Navigator.pushNamed(context, AppRoute.brands, arguments: brands);
+  }
+
+  @override
+  Future<void> close() {
+    searchController.dispose();
+    _debounce?.cancel();
+    return super.close();
   }
 }
