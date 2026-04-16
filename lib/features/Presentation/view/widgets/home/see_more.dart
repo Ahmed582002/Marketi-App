@@ -1,0 +1,35 @@
+import 'package:flutter/material.dart';
+
+class SeeMore extends StatelessWidget {
+  final String text;
+  final void Function() onTap;
+  const SeeMore({super.key, required this.text, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            text,
+            style: Theme.of(
+              context,
+            ).textTheme.displayMedium!.copyWith(fontSize: 18),
+          ),
+          GestureDetector(
+            onTap: onTap,
+            child: Text(
+              "See More",
+              style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                fontSize: 16,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

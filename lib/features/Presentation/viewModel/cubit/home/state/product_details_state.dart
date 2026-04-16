@@ -1,0 +1,23 @@
+import 'package:store/features/data/models/home/product_model.dart';
+
+abstract class ProductDetailsState {}
+
+class ProductDetailsInitial extends ProductDetailsState {}
+
+class ProductDetailsLoading extends ProductDetailsState {}
+
+class ProductDetailsSuccess extends ProductDetailsState {
+  final ProductModel product;
+
+  ProductDetailsSuccess({required this.product});
+
+  ProductDetailsSuccess copyWith({ProductModel? product, int? quantity}) {
+    return ProductDetailsSuccess(product: product ?? this.product);
+  }
+}
+
+class ProductDetailsError extends ProductDetailsState {
+  final String message;
+
+  ProductDetailsError(this.message);
+}
